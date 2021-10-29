@@ -3,6 +3,10 @@ plugins {
     id 'kotlin-android'
 }
 
+ext.versionMajor = 1
+ext.versionMinor = 0
+ext.versionPatch = 0
+
 android {
     compileSdk 31
 
@@ -11,7 +15,7 @@ android {
         minSdk 21
         targetSdk 31
         versionCode 1
-        versionName "1.0"
+        versionName generateVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,6 +33,24 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
+
+def generateVersionName() {
+    String versionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+    def versionPropsFile = file('version.properties')
+    Properties versionProps = new Properties()
+
+    if (versionPropsFile.canRead()) {
+        versionProps.load(new FileInputStream(versionPropsFile))
+    } else {
+        versionProps['BUILD_NUMBER'] = '0'
+    }
+
+    def buildNumber = versionProps['BUILD_NUMBER'].toInteger() + 1
+    versionProps['BUILD_NUMBER'] = buildNumber.toString()
+    versionProps.store(versionPropsFile.newWriter(), null)
+
+    return "${versionName}.BN-${buildNumber}"
 }
 
 dependencies {

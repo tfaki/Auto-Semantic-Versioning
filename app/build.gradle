@@ -14,7 +14,7 @@ android {
         applicationId "com.android.semver"
         minSdk 21
         targetSdk 31
-        versionCode 1
+        versionCode generateVersionCode()
         versionName generateVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,6 +33,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
+
+def generateVersionCode() {
+    return ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
 }
 
 def generateVersionName() {
